@@ -1,0 +1,15 @@
+I'm using YAML in another project, and I originally thought I'd just
+put some snippets together.
+
+But I wound up doing a number of short tests to see what the basic
+yaml module in Python thinks. As this is getting a bit long to be a
+gist, I'm just putting it up in a repo.
+
+I'm using yaml_mode in emacs to edit; it's reasonably good, but
+doesn't give you much help.
+
+I've also done a few tests with Perl; if you have YAML::XS, try:
+
+cat | perl -MYAML::XS -MData::Dumper -e 'print Dumper(Load(join("", <STDIN>)))'
+
+Or install ysh from libyaml-shell-perl on debian derived systems.
