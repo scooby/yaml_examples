@@ -1,0 +1,12 @@
+# Moving the unicode linebreak tests here since they throw off line counts
+# pyyaml correctly counts unicode line breaks, but nothing else does.
+
+# Example 5.11. Line Break Characters
+---
+|
+  Generic line break
+  Line separator   Paragraph separator   More stuff after
+
+# Same as:
+---
+"Generic line break\nLine separator\u2028Paragraph separator\u2029More stuff after"

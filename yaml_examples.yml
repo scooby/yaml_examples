@@ -126,16 +126,16 @@ rbi:
   - Ken Griffey
 
 # Example 2.11. Mapping between Sequences
-# ---
-# ? - Detroit Tigers
-#   - Chicago cubs
-# :
-#   - 2001-07-23
+---
+? - Detroit Tigers
+  - Chicago cubs
+:
+  - 2001-07-23
 
-# ? [ New York Yankees,
-#     Atlanta Braves ]
-# : [ 2001-07-02, 2001-08-12,
-#     2001-08-14 ]
+? [ New York Yankees,
+    Atlanta Braves ]
+: [ 2001-07-02, 2001-08-12,
+    2001-08-14 ]
 
 # Does not work with python yaml or perl yaml.  Fixing this means the
 # dictionary constructor must identify which keys are non-hashable and
@@ -403,14 +403,7 @@ single: 'text'
 double: "text"
 
 # Example 5.11. Line Break Characters
----
-|
-  Generic line break
-  Line separator   Paragraph separator   More stuff after
-
-# Same as:
----
-"Generic line break\nLine separator\u2028Paragraph separator\u2029More stuff after"
+# See unicode_linebreaks.yml
 
 # Example 5.13. Tabs and Spaces
 ---
@@ -591,7 +584,8 @@ block styles:
   !!str 'Tagged',
   "Tagged", # Same as above
   *anchor, # Alias node
-  !!str,   # Empty plain scalar
+  !!str ,   # Empty plain scalar
+  # !!str,  Parsing bug?
   "",      # Same as above
 ]
 
@@ -656,7 +650,7 @@ seq:
 ---
 "as space \
  trimmed\n\
- specific\L\n\
+ specific\n\
  escaped\t\
  none"
 
