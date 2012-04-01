@@ -1,0 +1,10 @@
+# Example 8.13. Completely empty flow nodes
+---
+{
+  ? foo :,
+  ? : bar,
+}
+
+# Same:
+---
+{ "foo": "", "" : "bar", }

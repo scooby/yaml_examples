@@ -368,10 +368,13 @@ sequence:
 - one
 - two
 mapping:
-#  ? sky
-#  : blue
-#  ? sea : green
-# Bug in python yaml?!
+  ? sky
+  : blue
+  ? sea : green
+
+# Bug in python yaml?! This is parsing as:
+---
+{ sequence: [one, two, ], mapping: { sky: blue, { sea: green} : '' } }
 
 # Example 5.4. Flow Collection Indicators
 ---
@@ -590,15 +593,7 @@ block styles:
 ]
 
 # Example 8.13. Completely empty flow nodes
----
-{
-  ? foo :,
-  ? : bar,
-}
-
-# Same:
----
-{ "foo": "", "" : "bar", }
+# Move to breaks_cloader.yml
 
 # Example 8.14. Block Nodes
 ---

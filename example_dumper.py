@@ -1,9 +1,31 @@
 import yaml
-# Other ways to set Loader:
-#from yaml import Loader as Loader
-from yaml import CLoader as Loader
-# from yaml import CSafeLoader as Loader
-# from yaml import SafeLoader as Loader
+import sys
+
+loader_set = False
+x = 1
+print repr(sys.argv)
+while x < len(sys.argv):
+    if sys.argv[x].startswith('-'):
+        arg = sys.argv[x]
+        if arg == '-l':
+            from yaml import Loader as Loader
+        elif arg == '-c':
+            from yaml import CLoader as Loader
+        elif arg == '-L':
+            from yaml import SafeLoader as Loader
+        elif arg == '-C':
+            from yaml import CSafeLoader as Loader
+        else:
+            raise RuntimeError("Didn't recognize %r" % (arg,))
+        loader_set = True
+    else:
+        break
+    x += 1
+if not loader_set:
+    from yaml import Loader as Loader
+files = sys.argv[x:]
+if not files:
+    files = ['yaml_examples.yml']
 
 # If you *don't* specify your loader in some places, you'll
 # break. Always pass the Loader=Loader parameter, and set the
@@ -44,22 +66,22 @@ def construct_mapping_kludge(loader, node):
     whether it knows how to *make* it hashable, and if so, does that.
     If not it just lets it through and hopes for the best. But the
     common problem cases are handled here.  If you're constructing
-    objects directly from YAML, just make them immutable and hashable!
-    """
+    objects directly from YAML, just make them immutable and hashable! """
     def anything(node):
         if isinstance(node, yaml.ScalarNode):
             return loader.construct_scalar(node)
         elif isinstance(node, yaml.SequenceNode):
             return loader.construct_sequence(node)
         elif isinstance(node, yaml.MappingNode):
-            return loader.construct_sequence(node)
+            return construct_mapping_kludge(loader, node)
     def make_hashable(value):
+        """ Reconstructs a non-hashable value. """
         if isinstance(value, list):
-            return tuple(value)
+            return tuple(map(make_hashable, value))
         elif isinstance(value, set):
-            return frozenset(value)
+            return frozenset(map(make_hashable, value))
         elif isinstance(value, dict):
-            return tuple(sorted(value.items()))
+            return tuple(sorted((make_hashable(key), val) for key, val in value.items()))
         else:
             return value
     def new_items():
@@ -126,6 +148,8 @@ class Invoice(yaml.YAMLObject):
         args = dict((k.replace('-', '_'), v) for k, v in value.items())
         return cls(**args)
 
-with open("yaml_examples.yml", "r") as yaml_fh:
-    for doc in yaml.load_all(yaml_fh, Loader=Loader):
-        print(repr(doc))
+for name in files:
+    with open(name, "r") as yaml_fh:
+        print("=============== %s ================" % (name,))
+        for doc in yaml.load_all(yaml_fh, Loader=Loader):
+            print(repr(doc))
