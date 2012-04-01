@@ -1,0 +1,846 @@
+%YAML 1.1
+# These examples are copied from the YAML 1.1 spec
+# See examples_dumper for how these are actually loaded into python.
+# Some examples are commented out; either there are parsing bugs or
+# I'm not reading the spec correctly.
+
+# Example 2.1.  Sequence of Scalars
+# (ball players)
+---
+- Mark McGwire
+- Sammy Sosa
+- Ken Griffey
+
+# Same as
+---
+[ "Mark McGwire", "Sammy Sosa", "Ken Griffey" ]
+
+# Example 2.2.  Mapping Scalars to Scalars
+# (player statistics)
+---
+hr:  65    # Home runs
+avg: 0.278 # Batting average
+rbi: 147   # Runs Batted In
+
+# Same as
+---
+{ hr: 65, avg: 0.278, rbi: 147 }
+
+# Example 2.3.  Mapping Scalars to Sequences
+# (ball clubs in each league)
+---
+american:
+  - Boston Red Sox
+  - Detroit Tigers
+  - New York Yankees
+national:
+  - New York Mets
+  - Chicago Cubs
+  - Atlanta Braves
+
+# Same as
+---
+{ american: [Sox, Tigers, Yankees,],
+  national: [Mets, Cubs, Braves,],
+}
+
+# Example 2.4.  Sequence of Mappings
+# (players’ statistics)
+---
+-
+  name: Mark McGwire
+  hr:   65
+  avg:  0.278
+-
+  name: Sammy Sosa
+  hr:   63
+  avg:  0.288
+
+# Same as
+---
+[ { name: Mark, hr: 65, avg: 0.278 },
+  { name: Sammy, hr: 63, avg: 0.288 },
+]
+
+# Example 2.5. Sequence of Sequences
+---
+- [name        , hr, avg  ]
+- [Mark McGwire, 65, 0.278]
+- [Sammy Sosa  , 63, 0.288]
+
+#Example 2.6. Mapping of Mappings
+---
+Mark McGwire: {hr: 65, avg: 0.278}
+Sammy Sosa: {
+    hr: 63,
+    avg: 0.288
+  }
+...
+
+#Example 2.7.  Two Documents in a Stream
+#(each with a leading comment)
+
+# Ranking of 1998 home runs
+---
+- Mark McGwire
+- Sammy Sosa
+- Ken Griffey
+
+# Team ranking
+---
+- Chicago Cubs
+- St Louis Cardinals
+...
+# Example 2.8.  Play by Play Feed
+# from a Game
+---
+time: 20:03:20
+player: Sammy Sosa
+action: strike (miss)
+...
+---
+time: 20:03:47
+player: Sammy Sosa
+action: grand slam
+...
+#Example 2.9.  Single Document with
+#Two Comments
+---
+hr: # 1998 hr ranking
+  - Mark McGwire
+  - Sammy Sosa
+rbi:
+  # 1998 rbi ranking
+  - Sammy Sosa
+  - Ken Griffey
+...
+# Example 2.10.  Node for “Sammy Sosa”
+# appears twice in this document
+---
+hr:
+  - Mark McGwire
+  # Following node labeled SS
+  - &SS Sammy Sosa
+rbi:
+  - *SS # Subsequent occurrence
+  - Ken Griffey
+
+# Example 2.11. Mapping between Sequences
+# ---
+# ? - Detroit Tigers
+#   - Chicago cubs
+# :
+#   - 2001-07-23
+
+# ? [ New York Yankees,
+#     Atlanta Braves ]
+# : [ 2001-07-02, 2001-08-12,
+#     2001-08-14 ]
+
+# Does not work with python yaml or perl yaml.  Fixing this means the
+# dictionary constructor must identify which keys are non-hashable and
+# convert them to hashable types.
+# A possible workaround: use !python/tuple to identify non-mutable
+# sequences, but you're putting a lot of smarts about Python in the
+# YAML doc.
+
+# Example 2.12. In-Line Nested Mapping
+# products purchased
+---
+- item    : Super Hoop
+  quantity: 1
+- item    : Basketball
+  quantity: 4
+- item    : Big Shoes
+  quantity: 1
+
+# Example 2.13.  In literals,
+# newlines are preserved
+
+# ASCII Art
+--- |
+  \//||\/||
+  // ||  ||__
+
+# Example 2.14.  In the plain scalar,
+# newlines become spaces
+---
+  Mark McGwire's
+  year was crippled
+  by a knee injury.
+
+# This comment added to fix syntax highlighting: '
+
+# Example 2.15.  Folded newlines are preserved
+# for "more indented" and blank lines
+---
+>
+ Sammy Sosa completed another
+ fine season with great stats.
+
+   63 Home Runs
+   0.288 Batting Average
+
+ What a year!
+
+# Same as:
+---
+"Sammy Sosa completed another fine season with
+ great stats.\n\n  63 Home Runs\n\
+ \  0.288 Batting Average\n\nWhat a year!\n"
+
+
+# Example 2.16.  Indentation determines scope
+---
+name: Mark McGwire
+accomplishment: >
+  Mark set a major league
+  home run record in 1998.
+stats: |
+  65 Home Runs
+  0.278 Batting Average
+
+# Example 2.17. Quoted Scalars
+---
+unicode: "Sosa did fine.\u263A"
+control: "\b1998\t1999\t2000\n"
+hexesc:  "\x13\x10 is \r\n"
+
+single: '"Howdy!" he cried.'
+quoted: ' # not a ''comment''.'
+tie-fighter: '|\-*-/|'
+
+# Example 2.18. Multi-line Flow Scalars
+---
+plain:
+  This unquoted scalar
+  spans many lines.
+
+quoted: "So does this
+  quoted scalar.\n"
+
+# Example 2.19. Integers
+---
+canonical: 12345
+decimal: +12,345
+sexagesimal: 3:25:45
+octal: 014
+hexadecimal: 0xC
+
+# Example 2.20. Floating Point
+---
+canonical: 1.23015e+3
+exponential: 12.3015e+02
+sexagesimal: 20:30.15
+fixed: 1,230.15
+negative infinity: -.inf
+not a number: .NaN
+
+# Example 2.21. Miscellaneous
+---
+null: ~
+true: y
+false: n
+string: '12345'
+
+# Example 2.22. Timestamps
+---
+canonical: 2001-12-15T02:59:43.1Z
+iso8601: 2001-12-14t21:59:43.10-05:00
+spaced: 2001-12-14 21:59:43.10 -5
+date: 2002-12-14
+
+# Example 2.23. Various Explicit Tags
+---
+not-date: !!str 2002-04-28
+
+picture: !!binary |
+ R0lGODlhDAAMAIQAAP//9/X
+ 17unp5WZmZgAAAOfn515eXv
+ Pz7Y6OjuDg4J+fn5OTk6enp
+ 56enmleECcgggoBADs=
+
+application specific tag: !something |
+ The semantics of the tag
+ above may be different for
+ different documents.
+
+# Example 2.24. Global Tags
+
+%TAG ! tag:clarkevans.com,2002:
+--- !shape
+  # Use the ! handle for presenting
+  # tag:clarkevans.com,2002:circle
+- !circle
+  center: &ORIGIN {x: 73, y: 129}
+  radius: 7
+- !line
+  start: *ORIGIN
+  finish: { x: 89, y: 102 }
+- !label
+  start: *ORIGIN
+  color: 0xFFEEBB
+  text: Pretty vector drawing.
+
+# Example 2.25. Unordered Sets
+
+# sets are represented as a
+# mapping where each key is
+# associated with the empty string
+--- !!set
+? Mark McGwire
+? Sammy Sosa
+? Ken Griff
+
+# Example 2.26. Ordered Mappings
+
+# ordered maps are represented as
+# a sequence of mappings, with
+# each mapping having one key
+--- !!omap
+- Mark McGwire: 65
+- Sammy Sosa: 63
+- Ken Griffy: 58
+
+# Example 2.27. Invoice
+--- !<tag:clarkevans.com,2002:invoice>
+invoice: 34843
+date   : 2001-01-23
+bill-to: &id001
+    given  : Chris
+    family : Dumars
+    address:
+        lines: |
+            458 Walkman Dr.
+            Suite #292
+        city    : Royal Oak
+        state   : MI
+        postal  : 48046
+ship-to: *id001
+product:
+    - sku         : BL394D
+      quantity    : 4
+      description : Basketball
+      price       : 450.00
+    - sku         : BL4438H
+      quantity    : 1
+      description : Super Hoop
+      price       : 2392.00
+tax  : 251.42
+total: 4443.52
+comments:
+    Late afternoon is best.
+    Backup contact is Nancy
+    Billsmer @ 338-4338.
+
+# Example 2.28. Log File
+
+---
+Time: 2001-11-23 15:01:42 -5
+User: ed
+Warning:
+  This is an error message
+  for the log file
+---
+Time: 2001-11-23 15:02:31 -5
+User: ed
+Warning:
+  A slightly different error
+  message.
+---
+Date: 2001-11-23 15:03:17 -5
+User: ed
+Fatal:
+  Unknown variable "bar"
+Stack:
+  - file: TopClass.py
+    line: 23
+    code: |
+      x = MoreObject("345\n")
+  - file: MoreClass.py
+    line: 58
+    code: |-
+      foo = bar
+
+# Example 5.3. Block Structure Indicators
+---
+sequence:
+- one
+- two
+mapping:
+#  ? sky
+#  : blue
+#  ? sea : green
+# Bug in python yaml?!
+
+# Example 5.4. Flow Collection Indicators
+---
+sequence: [ one, two ]
+mapping: { sky: blue, sea: green }
+---
+{ ? sequence: [ one, two ],
+  ? mapping: { sky: blue, sea: green }, }
+
+# Example 5.6. Node Property Indicators
+---
+anchored: !local &anchor value
+alias: *anchor
+
+# Example 5.7. Block Scalar Indicators
+---
+literal: |
+  text
+folded: >
+  text
+
+# Same as:
+---
+{ literal: "text\n", folded: "text\n", }
+
+# Example 5.8. Quoted Scalar Indicators
+---
+single: 'text'
+double: "text"
+
+# Example 5.11. Line Break Characters
+---
+|
+  Generic line break
+  Line separator   Paragraph separator   More stuff after
+
+# Same as:
+---
+"Generic line break\nLine separator\u2028Paragraph separator\u2029More stuff after"
+
+# Example 5.13. Tabs and Spaces
+---
+  "Text containing   
+  both space and	
+  	tab	characters"
+
+# Same as:
+---
+"Text containing both space and tab	characters"
+
+# Example 5.14. Escaped Characters
+---
+"Fun with \x5C
+ \x22 \x07 \x08 \x1B \0C
+ \x0A \x0D \x09 \x0B \x00
+ \x20 \xA0 \x85 \u2028 \u2029
+ A A A"
+---
+"Fun with \\
+ \" \a \b \e \f
+ \n \r \t \v \0
+ \  \_ \N \L \P \
+ \x41 \u0041 \U00000041"
+
+# Example 6.1. Indentation Spaces
+---
+  # Leading comment line spaces are
+   # neither content nor indentation.
+    
+Not indented:
+ By one space: |
+    By four
+      spaces
+ Flow style: [    # Leading spaces
+   By two,        # in flow style
+  Also by two,    # are neither
+   Still by two   # content nor
+    ]             # indentation.
+
+# Another bug in pyyaml: in Example 6.1, they show that a tab within flow style
+# should be disregarded, but it's an error.
+
+# Example 6.4. Multi-Line Comments
+# Multiline comments
+---
+key:    # Comment
+        # lines
+  value
+
+# Same as:
+---
+{ key: value }
+
+# Example 7.10. Documents
+---
+"Root flow
+ scalar"
+--- !!str >
+ Root block
+ scalar
+---
+# Root collection:
+foo : bar
+... # Is optional.
+---
+# Explicit document may be empty.
+
+# Example 8.1. Node Properties
+---
+#!!str
+# &a1
+#  "foo" : !!str bar
+#&a2 baz : *a1
+
+# Doesn't work with yaml in python
+
+# Example 8.2. Node Anchors
+---
+First occurrence: &anchor Value
+Second occurrence: *anchor
+
+# Same as:
+---
+{ First occurrence: Value,
+  Second occurrence: Value,
+} # Except Value is the same "node" as Value
+
+#Example 8.3. Verbatim Tags
+---
+!<tag:yaml.org,2002:str> foo :
+  !<!bar> baz
+
+# Same as:
+---
+foo: !<!bar> baz
+...
+
+# Example 8.5. Tag Shorthands
+%TAG !o! tag:ben-kiki.org,2000:
+---
+- !local foo
+- !!str bar
+- !o!type baz
+
+# Example 8.8. Mandatory Scalar Indentation
+---
+foo:
+ "bar
+ baz"
+---
+"foo
+ bar"
+---
+foo
+ bar
+--- |
+ foo
+ bar
+...
+
+# Same as:
+---
+{ foo: "bar baz" }
+---
+"foo bar"
+---
+"foo bar"
+---
+"foo\nbar\n"
+...
+
+# Example 8.9. Flow Content
+---
+scalars:
+  plain: !!str some text
+  quoted:
+    single: 'some text'
+    double: "some text"
+collections:
+  sequence: !!seq [ !str entry,
+    # Mapping entry:
+      key: value ]
+  mapping: { key: value }
+...
+
+# Example 8.10. Block Content
+---
+block styles:
+  scalars:
+    literal: !!str |
+      #!/usr/bin/perl
+      print "Hello, world!\n";
+    literal flowed:
+      "#!/usr/bin/perl\nprint \"Hello, world!\\n\";\n"
+    folded: >
+      This sentence
+      is false.
+    folded flowed:
+      "This sentence is false.\n"
+  # Not sure how this is supposed to work, even the
+  # yaml representation in the spec seems to be wrong.
+  #collections: !!seq
+  #  sequence: !!seq # Entry:
+  #    - entry # Plain
+  #    # Mapping entry:
+  #    - key: value
+  #  mapping:
+  #    key: value
+  collections flowed:
+    { sequence: [ entry, { key: value } ], mapping: { key: value } }
+
+# Example 8.12. Flow Nodes in Flow Context
+---
+[
+  Without properties,
+  &anchor "Anchored",
+  !!str 'Tagged',
+  "Tagged", # Same as above
+  *anchor, # Alias node
+  !!str,   # Empty plain scalar
+  "",      # Same as above
+]
+
+# Example 8.13. Completely empty flow nodes
+---
+{
+  ? foo :,
+  ? : bar,
+}
+
+# Same:
+---
+{ "foo": "", "" : "bar", }
+
+# Example 8.14. Block Nodes
+---
+- "flow in block"
+- >
+ Block scalar
+- !!map # Block collection
+  foo : bar
+
+# Same:
+---
+[ "flow in block",
+  "Block scalar\n",
+  { foo: bar } ]
+
+# Example 8.15. Completely Empty Block Nodes
+---
+seq:
+- # Empty plain scalar
+- ? foo
+  :
+  ?
+  : bar,
+
+# Same:
+---
+[ "", { foo: "", "": bar, } ]
+
+# Example 9.1. Double Quoted Scalars
+---
+'simple key' : {
+  'also simple' : value,
+  ? 'not a
+  simple key' : 'any
+  value'
+}
+
+# Example 9.2. Double Quoted Line Breaks
+---
+"as space	
+ trimmed 
+
+ specific
+
+ escaped	\
+ 
+ none"
+# Same:
+---
+"as space \
+ trimmed\n\
+ specific\L\n\
+ escaped\t\
+ none"
+
+# Example 9.3. First Double Quoted Line
+---
+- "
+  last"
+  # tab after "
+- " 	
+  last"
+- " 	first
+  last"
+# Same as:
+---
+[ " last", " last", " \tfirst last" ]
+...
+
+# Example 9.5. Last Double Quoted Line
+---
+- "first
+  	"
+- "first
+
+  	last"
+- "first
+ inner
+ \ 	last"
+# Same as:
+---
+[ "first ", "first\nlast", "first inner  \tlast", ]
+
+# Example 9.6. Single Quoted Quotes
+---
+'here''s to \backslashes and "quotes"'
+---
+"here's to \\backslashes and \"quotes\""
+...
+
+# quoted and unquoted keys and values
+# Moral of the story: Use ? to break a
+# key over multiple lines
+# Example 9.7. Single Quoted Scalars
+---
+'simple key' : {
+  'also simple' : value,
+  ? 'not a
+  simple key' : 'any
+  value'
+}
+
+# Example 9.8. Single Quoted Line Breaks
+---
+'as space	
+ trimmed 
+
+ specific
+
+ none'
+# Same:
+---
+"as space \
+ trimmed\n\
+ specific\L\n\
+ none"
+
+---
+"simple key" : {
+  "also simple" : value,
+  ? "not a
+  simple key" : "any
+  value"
+}
+
+# Example 9.13. Plain Scalars
+---
+simple key : {
+  also simple : value,
+  ? not a
+  simple key : any
+  value
+}
+
+# Above three are equivalent to:
+---
+{ "simple key": { "also simple": "value", "not a simple key" : "any value" } }
+...
+
+# Explicit document. Root
+# scalar (literal) node.
+--- |
+ Text content
+---
+" Text content"
+...
+
+---
+- |
+ literal
+- >
+ folded
+# Same as:
+---
+[ " literal", "folded" ]
+...
+
+# Example 9.18. Block Scalar Header
+---
+- | # Just the style
+ literal
+- >1 # Indentation indicator
+  folded
+- |+ # Chomping indicator
+ keep
+
+- >-1 # Both indicators
+  strip
+
+# Example 9.23. Block Scalar Chomping
+---
+ # Strip
+  # Comments:
+strip: |-
+  # text
+  
+ # Clip
+  # comments:
+
+clip: |
+  # text
+ 
+ # Keep
+  # comments:
+
+keep: |+
+  # text
+
+ # Trail
+  # comments.
+
+# Same as:
+---
+strip: "# text"
+clip: "# text\n"
+keep: "# text\n"
+...
+
+# Example 9.30. Folded Lines
+---
+>
+ folded
+ line
+
+ next
+ line
+
+   * bullet
+   * list
+
+ last
+ line
+
+# Comment
+# Same as:
+---
+"folded line\nnext line\n  * bullet\n  * list\nlast line\n"
+
+# Example 10.13. Explicit Block Mapping Entries
+---
+? explicit key # implicit value
+? |
+  block key
+: - one # explicit in-line
+  - two # block value
+---
+{ ? "explicit key" : "",
+  ? "block key" : [ "one", "two", ], }
+...
+
+# Example 10.14. Simple Block Mapping Entries
+---
+plain key: # empty value
+"quoted key":
+- one # explicit next-line
+- two # block value
+---
+{ ? "plain key": "", ? "quoted key": [ "one", "two", ], }
+...
