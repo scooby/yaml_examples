@@ -79,9 +79,10 @@ def construct_mapping_kludge(loader, node):
         if isinstance(value, list):
             return tuple(map(make_hashable, value))
         elif isinstance(value, set):
-            return frozenset(map(make_hashable, value))
+            return frozenset(value)
         elif isinstance(value, dict):
-            return tuple(sorted((make_hashable(key), val) for key, val in value.items()))
+            return frozenset((make_hashable(key), make_hashable(val))
+                             for key, val in value.items())
         else:
             return value
     def new_items():
